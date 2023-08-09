@@ -2,6 +2,42 @@
 #include<vector>
 using namespace std;
 
+class Solution 
+{
+public:
+//数组分三块,当都是重复元素时,只遍历一次,因为左右区间都不存在,遍历一次之后就返回了
+//随机返回数组中的选择基准元素
+    vector<int> sortArray(vector<int>& nums) 
+    {
+        srand(time(NULL));
+        qsort(nums,0,nums.size()-1);
+        return nums;
+    }
+    void qsort(vector<int>&nums,int left,int right)
+    {
+        if(left>=right) return ;
+        int key=getRandom(nums,left,right);
+        int i=left,less=left-1,more=right+1;
+        while(i<more)
+        {
+            if(nums[i]>key)
+                swap(nums[--more],nums[i]);
+            else if(nums[i]<key)
+                swap(nums[++less],nums[i++]);
+            else
+                i++;
+        }
+        //left less  less+1,more-1, more,right
+        qsort(nums,left,less);
+        qsort(nums,more,right);
+    }
+    //返回区间内的一个随机值
+    int getRandom(vector<int>&nums,int left,int right)
+    {
+        int r=rand();
+        return nums[r%(right-left+1) + left];
+    }
+};
 class Sort
 {
 public:
@@ -106,7 +142,7 @@ public:
 	void quickSort(vector<int>& arr, int l, int r)
 	{
 		if (l >= r)return;
-		int pos = rand() % (r-l+1);
+		int pos = rand() % (r-l+1)+l;//偏移量+left
 		swap(arr[l + pos], arr[r]);
 		pair<int, int>ret = partition(arr,l,r);
 		quickSort(arr,l,ret.first-1);
